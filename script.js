@@ -2,10 +2,6 @@
 // 📚 DATABASE KATA
 // ==========================
 const words = [
-
-    // ==========================
-    // 👋 UMUM
-    // ==========================
     { indo: "halo", jp: "こんにちは", romaji: "konnichiwa" },
     { indo: "selamat pagi", jp: "おはよう", romaji: "ohayou" },
     { indo: "selamat malam", jp: "こんばんは", romaji: "konbanwa" },
@@ -15,9 +11,6 @@ const words = [
     { indo: "ya", jp: "はい", romaji: "hai" },
     { indo: "tidak", jp: "いいえ", romaji: "iie" },
 
-    // ==========================
-    // 👤 ORANG
-    // ==========================
     { indo: "saya", jp: "わたし", romaji: "watashi" },
     { indo: "kamu", jp: "あなた", romaji: "anata" },
     { indo: "dia", jp: "かれ", romaji: "kare" },
@@ -25,75 +18,53 @@ const words = [
     { indo: "guru", jp: "せんせい", romaji: "sensei" },
     { indo: "murid", jp: "がくせい", romaji: "gakusei" },
 
-    // ==========================
-    // 🍜 MAKANAN
-    // ==========================
     { indo: "makan", jp: "たべる", romaji: "taberu" },
     { indo: "minum", jp: "のむ", romaji: "nomu" },
     { indo: "air", jp: "みず", romaji: "mizu" },
     { indo: "nasi", jp: "ごはん", romaji: "gohan" },
     { indo: "roti", jp: "パン", romaji: "pan" },
 
-    // ==========================
-    // 🏠 BENDA
-    // ==========================
     { indo: "rumah", jp: "いえ", romaji: "ie" },
     { indo: "meja", jp: "つくえ", romaji: "tsukue" },
     { indo: "kursi", jp: "いす", romaji: "isu" },
     { indo: "buku", jp: "ほん", romaji: "hon" },
     { indo: "pena", jp: "ペン", romaji: "pen" },
-    { indo: "tas", jp: "かばん", romaji: "kaban" },
-    { indo: "sepatu", jp: "くつ", romaji: "kutsu" },
-    { indo: "mobil", jp: "くるま", romaji: "kuruma" },
-    { indo: "motor", jp: "バイク", romaji: "baiku" },
 
-    // ==========================
-    // 🐾 HEWAN
-    // ==========================
     { indo: "kucing", jp: "ねこ", romaji: "neko" },
     { indo: "anjing", jp: "いぬ", romaji: "inu" },
-    { indo: "burung", jp: "とり", romaji: "tori" },
-    { indo: "ikan", jp: "さかな", romaji: "sakana" },
-    { indo: "sapi", jp: "うし", romaji: "ushi" },
-    { indo: "kuda", jp: "うま", romaji: "uma" },
-    { indo: "ayam", jp: "にわとり", romaji: "niwatori" },
 
-    // ==========================
-    // 🏫 TEMPAT
-    // ==========================
     { indo: "sekolah", jp: "がっこう", romaji: "gakkou" },
-    { indo: "kelas", jp: "きょうしつ", romaji: "kyoushitsu" },
-    { indo: "kantor", jp: "オフィス", romaji: "ofisu" },
-    { indo: "toko", jp: "みせ", romaji: "mise" },
-
+    { indo: "kelas", jp: "きょうしつ", romaji: "kyoushitsu" }
 ];
 
 // ==========================
 // 🔧 NORMALISASI INPUT
 // ==========================
+const slangDict = {
+    "gw": "saya",
+    "gua": "saya",
+    "aku": "saya",
+    "lu": "kamu",
+    "makasih": "terima kasih"
+};
+
 function normalize(text) {
     text = text.toLowerCase().trim();
-
-    // amanin kalau slangDict kosong
-    if (typeof slangDict !== "undefined" && slangDict[text]) {
-        text = slangDict[text];
-    }
-
+    if (slangDict[text]) text = slangDict[text];
     return text;
 }
 
 // ==========================
-// 🔍 LEVENSHTEIN (cek typo)
+// 🔍 SIMILARITY
 // ==========================
 function similarity(a, b) {
     let matrix = [];
-
     for (let i = 0; i <= b.length; i++) matrix[i] = [i];
     for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
 
     for (let i = 1; i <= b.length; i++) {
         for (let j = 1; j <= a.length; j++) {
-            if (b.charAt(i - 1) == a.charAt(j - 1)) {
+            if (b[i - 1] == a[j - 1]) {
                 matrix[i][j] = matrix[i - 1][j - 1];
             } else {
                 matrix[i][j] = Math.min(
@@ -104,30 +75,29 @@ function similarity(a, b) {
             }
         }
     }
-
     return matrix[b.length][a.length];
 }
 
-// ==========================
-// 🧠 SMART SEARCH
-// ==========================
 function findBestMatch(input) {
     let best = null;
-    let minDistance = Infinity;
+    let min = Infinity;
 
     words.forEach(w => {
-        let dist = similarity(input, w.indo);
-
-        if (dist < minDistance) {
-            minDistance = dist;
+        let d = similarity(input, w.indo);
+        if (d < min) {
+            min = d;
             best = w;
         }
     });
 
-    // toleransi typo (maks 3 beda huruf)
-    if (minDistance <= 3) return best;
+    return min <= 3 ? best : null;
+}
 
-    return null;
+// ==========================
+// 🔊 GETARAN (HP)
+// ==========================
+function vibrate() {
+    if (navigator.vibrate) navigator.vibrate(50);
 }
 
 // ==========================
@@ -135,24 +105,19 @@ function findBestMatch(input) {
 // ==========================
 function translateToJP() {
     let input = normalize(document.getElementById("inputText").value);
-
-    // cari exact dulu
-    let found = words.find(w => w.indo === input);
-
-    // kalau gak ketemu → pakai AI sederhana (fuzzy)
-    if (!found) {
-        found = findBestMatch(input);
-    }
+    let found = words.find(w => w.indo === input) || findBestMatch(input);
 
     if (found) {
         document.getElementById("result").innerHTML = `
-            🇯🇵 ${found.jp} <br>
-            🔤 ${found.romaji} <br>
+            🇯🇵 ${found.jp}<br>
+            🔤 ${found.romaji}<br>
             🇮🇩 ${found.indo}
         `;
     } else {
         document.getElementById("result").innerText = "Tidak ditemukan 😢";
     }
+
+    scrollToResult();
 }
 
 // ==========================
@@ -162,37 +127,119 @@ function translateToID() {
     let input = normalize(document.getElementById("inputText").value);
 
     let found = words.find(w =>
-        w.jp === input ||
-        w.romaji.toLowerCase() === input
+        w.jp === input || w.romaji.toLowerCase() === input
     );
 
     if (found) {
         document.getElementById("result").innerHTML = `
-            🇮🇩 ${found.indo} <br>
-            🔤 ${found.romaji} <br>
+            🇮🇩 ${found.indo}<br>
+            🔤 ${found.romaji}<br>
             🇯🇵 ${found.jp}
         `;
     } else {
         document.getElementById("result").innerText = "Tidak ditemukan 😢";
     }
+
+    scrollToResult();
 }
 
-function showWordList() {
+// ==========================
+// 💬 DATA PERCAKAPAN
+// ==========================
+const conversationData = {
+    sekolah: [
+        { jp: "おはよう！", romaji: "Ohayou!", indo: "Selamat pagi!" },
+        { jp: "先生はどこですか？", romaji: "Sensei wa doko?", indo: "Guru di mana?" }
+    ],
+    rumah: [
+        { jp: "ただいま", romaji: "Tadaima", indo: "Saya pulang" }
+    ]
+};
+
+// ==========================
+// 🎯 TAMPILKAN PERCAKAPAN
+// ==========================
+function showConversation() {
+    const select = document.getElementById("category");
+    const box = document.getElementById("conversationBox");
+
+    const data = conversationData[select.value];
+
     let html = "";
 
-    words.forEach(w => {
+    data.forEach(c => {
         html += `
-        <div style="margin-bottom:10px;">
-            🇮🇩 ${w.indo} → 🇯🇵 ${w.jp} (${w.romaji})
-        </div>
-        `;
+        <div class="conversation-item">
+            🇯🇵 ${c.jp}<br>
+            🔤 ${c.romaji}<br>
+            🇮🇩 ${c.indo}
+        </div>`;
     });
 
-    document.getElementById("wordList").innerHTML = html;
+    box.innerHTML = html;
 }
 
-showWordList();
+// ==========================
+// 🚀 INIT
+// ==========================
+document.addEventListener("DOMContentLoaded", function () {
 
-window.onload = function() {
-    showWordList();
-};
+    // Percakapan
+    const select = document.getElementById("category");
+    if (select) {
+        showConversation();
+        select.addEventListener("change", showConversation);
+    }
+
+    // Kata Harian
+    const btn = document.getElementById("toggleWordBtn");
+    const box = document.getElementById("dailyWord");
+
+    function getRandomWord() {
+        return words[Math.floor(Math.random() * words.length)];
+    }
+
+    if (btn && box) {
+        btn.addEventListener("click", function () {
+            vibrate();
+
+            box.classList.toggle("hidden");
+
+            if (!box.classList.contains("hidden")) {
+                let w = getRandomWord();
+                box.innerHTML = `
+                    🇮🇩 ${w.indo}<br>
+                    🔤 ${w.romaji}<br>
+                    🇯🇵 ${w.jp}
+                `;
+                btn.innerText = "Sembunyikan Kata";
+            } else {
+                btn.innerText = "Tampilkan Kata";
+            }
+        });
+    }
+
+    // ENTER KEY
+    const input = document.getElementById("inputText");
+    if (input) {
+        input.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") translateToJP();
+        });
+    }
+
+});
+
+// ===== SPLASH SCREEN =====
+window.addEventListener("load", function () {
+    const splash = document.getElementById("splash");
+
+    setTimeout(() => {
+        splash.style.opacity = "0";
+        splash.style.transition = "0.5s";
+
+        setTimeout(() => {
+            splash.style.display = "none";
+        }, 500);
+
+    }, 2000); // 2 detik tampil
+});
