@@ -5,7 +5,7 @@ body {
 
     background: 
         linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-        url("assets/bg.jpg");
+        url("bg.jpg");
 
     background-size: cover;
     background-position: center;
@@ -16,9 +16,18 @@ body {
 }
 
 .container {
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(12px);
+    max-width: 600px;
+    margin: 15px auto;
+    padding: 20px;
+
+    background: rgba(255, 255, 255, 0.92); /* lebih terang */
+    color: #333;
+
     border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 .container:hover {
@@ -91,10 +100,13 @@ input {
 /* ===== HASIL ===== */
 #result {
     margin-top: 10px;
-    background: rgba(255,255,255,0.8);
-    padding: 12px;
+    background: #ffffff;
+    color: #333;
+
+    padding: 14px;
     border-radius: 12px;
-    text-align: center;
+
+    border-left: 5px solid #ff7e5f; /* aksen keren */
     font-weight: bold;
 }
 
@@ -113,10 +125,13 @@ input {
 /* ===== BOX KATA ===== */
 #dailyWord {
     margin-top: 10px;
-    padding: 12px;
-    background: rgba(255,255,255,0.9);
+    padding: 14px;
+
+    background: #ffffff;
+    color: #333;
+
     border-radius: 12px;
-    text-align: center;
+    border-left: 5px solid #43cea2;
 }
 
 /* ===== SELECT ===== */
@@ -130,11 +145,19 @@ select {
 
 /* ===== PERCAKAPAN ===== */
 .conversation-item {
-    background: rgba(255,255,255,0.9);
-    padding: 12px;
+    background: #ffffff;
+    color: #333;
+
+    padding: 14px;
     border-radius: 12px;
     margin-top: 10px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     transition: 0.2s;
+}
+
+.conversation-item:hover {
+    transform: translateY(-3px);
 }
 
 .conversation-item:hover {
