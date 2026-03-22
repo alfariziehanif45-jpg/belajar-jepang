@@ -34,7 +34,11 @@ const words = [
     { indo: "anjing", jp: "いぬ", romaji: "inu" },
 
     { indo: "sekolah", jp: "がっこう", romaji: "gakkou" },
-    { indo: "kelas", jp: "きょうしつ", romaji: "kyoushitsu" }
+    { indo: "kelas", jp: "きょうしつ", romaji: "kyoushitsu" },
+
+    // ⭐ TAMBAHAN
+    { indo: "ganteng", jp: "かっこいい", romaji: "kakkoii" },
+    { indo: "cantik", jp: "きれい", romaji: "kirei" }
 ];
 
 // ==========================
@@ -55,45 +59,6 @@ function normalize(text) {
 }
 
 // ==========================
-// 🔍 SIMILARITY
-// ==========================
-function similarity(a, b) {
-    let matrix = [];
-    for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
-
-    for (let i = 1; i <= b.length; i++) {
-        for (let j = 1; j <= a.length; j++) {
-            if (b[i - 1] == a[j - 1]) {
-                matrix[i][j] = matrix[i - 1][j - 1];
-            } else {
-                matrix[i][j] = Math.min(
-                    matrix[i - 1][j - 1] + 1,
-                    matrix[i][j - 1] + 1,
-                    matrix[i - 1][j] + 1
-                );
-            }
-        }
-    }
-    return matrix[b.length][a.length];
-}
-
-function findBestMatch(input) {
-    let best = null;
-    let min = Infinity;
-
-    words.forEach(w => {
-        let d = similarity(input, w.indo);
-        if (d < min) {
-            min = d;
-            best = w;
-        }
-    });
-
-    return min <= 3 ? best : null;
-}
-
-// ==========================
 // 🔊 GETARAN (HP)
 // ==========================
 function vibrate() {
@@ -101,11 +66,11 @@ function vibrate() {
 }
 
 // ==========================
-// 🇯🇵 Indo → Jepang
+// 🇯🇵 Indo → Jepang (STRICT)
 // ==========================
 function translateToJP() {
     let input = normalize(document.getElementById("inputText").value);
-    let found = words.find(w => w.indo === input) || findBestMatch(input);
+    let found = words.find(w => w.indo === input);
 
     if (found) {
         document.getElementById("result").innerHTML = `
@@ -114,10 +79,8 @@ function translateToJP() {
             🇮🇩 ${found.indo}
         `;
     } else {
-        document.getElementById("result").innerText = "Tidak ditemukan 😢";
+        document.getElementById("result").innerHTML = "";
     }
-
-    scrollToResult();
 }
 
 // ==========================
@@ -137,10 +100,8 @@ function translateToID() {
             🇯🇵 ${found.jp}
         `;
     } else {
-        document.getElementById("result").innerText = "Tidak ditemukan 😢";
+        document.getElementById("result").innerHTML = "";
     }
-
-    scrollToResult();
 }
 
 // ==========================
@@ -184,7 +145,6 @@ const conversationData = {
         { jp: "あなたはとてもきれいです", romaji: "Anata wa totemo kirei desu", indo: "Kamu sangat cantik" },
         { jp: "いっしょに行きませんか？", romaji: "Issho ni ikimasen ka?", indo: "Mau pergi bersama?" }
     ]
-
 };
 
 // ==========================
@@ -222,14 +182,12 @@ function showConversation() {
 // ==========================
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Percakapan
     const select = document.getElementById("category");
     if (select) {
         showConversation();
         select.addEventListener("change", showConversation);
     }
 
-    // Kata Harian
     const btn = document.getElementById("toggleWordBtn");
     const box = document.getElementById("dailyWord");
 
@@ -257,7 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ENTER KEY
     const input = document.getElementById("inputText");
     if (input) {
         input.addEventListener("keypress", function(e) {
@@ -279,5 +236,5 @@ window.addEventListener("load", function () {
             splash.style.display = "none";
         }, 500);
 
-    }, 2000); // 2 detik tampil
+    }, 2000);
 });
