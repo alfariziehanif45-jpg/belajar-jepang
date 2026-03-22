@@ -147,13 +147,44 @@ function translateToID() {
 // 💬 DATA PERCAKAPAN
 // ==========================
 const conversationData = {
+
     sekolah: [
         { jp: "おはよう！", romaji: "Ohayou!", indo: "Selamat pagi!" },
         { jp: "先生はどこですか？", romaji: "Sensei wa doko?", indo: "Guru di mana?" }
     ],
+
     rumah: [
-        { jp: "ただいま", romaji: "Tadaima", indo: "Saya pulang" }
+        { jp: "ただいま", romaji: "Tadaima", indo: "Saya pulang" },
+        { jp: "おかえり", romaji: "Okaeri", indo: "Selamat datang kembali" }
+    ],
+
+    pasar: [
+        { jp: "これはいくらですか？", romaji: "Kore wa ikura desu ka?", indo: "Ini berapa harganya?" },
+        { jp: "やすくできますか？", romaji: "Yasuku dekimasu ka?", indo: "Bisa lebih murah?" }
+    ],
+
+    belanja: [
+        { jp: "これをください", romaji: "Kore o kudasai", indo: "Saya mau ini" }
+    ],
+
+    jalan: [
+        { jp: "どこに行きますか？", romaji: "Doko ni ikimasu ka?", indo: "Mau pergi ke mana?" }
+    ],
+
+    asing: [
+        { jp: "こんにちは！はじめまして", romaji: "Konnichiwa! Hajimemashite", indo: "Halo! Senang bertemu" },
+        { jp: "インドネシアから来ました", romaji: "Indonesia kara kimashita", indo: "Saya dari Indonesia" }
+    ],
+
+    dekat: [
+        { jp: "元気？", romaji: "Genki?", indo: "Apa kabar?" }
+    ],
+
+    pdkt: [
+        { jp: "あなたはとてもきれいです", romaji: "Anata wa totemo kirei desu", indo: "Kamu sangat cantik" },
+        { jp: "いっしょに行きませんか？", romaji: "Issho ni ikimasen ka?", indo: "Mau pergi bersama?" }
     ]
+
 };
 
 // ==========================
@@ -163,7 +194,14 @@ function showConversation() {
     const select = document.getElementById("category");
     const box = document.getElementById("conversationBox");
 
+    if (!select || !box) return;
+
     const data = conversationData[select.value];
+
+    if (!data) {
+        box.innerHTML = "Tidak ada percakapan 😢";
+        return;
+    }
 
     let html = "";
 
