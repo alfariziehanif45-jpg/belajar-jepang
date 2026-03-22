@@ -7,9 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+    <!-- 🌸 OPENING SCREEN -->
+<div id="splash">
+    <div class="splash-content">
+        <h1>🇯🇵 Nihongo Learning</h1>
+        <p>Belajar Bahasa Jepang Jadi Mudah ✨</p>
+        <div class="loader"></div>
+    </div>
+</div>
 
 <nav>
-    <h1>🇯🇵 Nihongo Learning</h1>
+   <h1>🇯🇵 Nihongo Learning ✨</h1>
 </nav>
 
 <section class="container">
@@ -23,19 +31,30 @@
         <button onclick="translateToID()">Jepang → Indonesia</button>
     </div>
 
-    <hr>
-
-    <hr>
-
-    <h2>📅 Kata Harian</h2>
-    <div id="dailyWord"></div>
-
+    <!-- 🔥 PINDAHKAN KE SINI -->
+    <h3>🔎 Hasil Translate</h3>
     <p id="result">Hasil akan muncul di sini...</p>
 
     <hr>
 
-    <h2>💬 Contoh Percakapan</h2>
-    <div id="conversation"></div>
+   <h2>📅 Kata Harian</h2>
+   <button id="toggleWordBtn">Tampilkan Kata</button>
+   <div id="dailyWord" class="hidden"></div>
+
+<h2>💬 Pilih Percakapan</h2>
+
+<select id="category">
+    <option value="sekolah">Sekolah</option>
+    <option value="rumah">Rumah</option>
+    <option value="pasar">Pasar</option>
+    <option value="belanja">Belanja</option>
+    <option value="jalan">Jalan</option>
+    <option value="asing">Orang Asing</option>
+    <option value="dekat">Orang Dekat</option>
+    <option value="pdkt">PDKT</option>
+</select>
+
+<div id="conversationBox"></div>
 
 </section>
 
