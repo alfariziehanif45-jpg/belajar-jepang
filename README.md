@@ -6,5 +6,5 @@ Web belajar bahasa Jepang dari Indonesia:
 - Kata harian
 - Percakapan
 
-🌐 Demo:
-https://username.github.io/belajar-jepang
+link
+ https://alfariziehanif45-jpg.github.io/belajar-jepang/
